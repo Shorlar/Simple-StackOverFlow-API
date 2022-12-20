@@ -1,0 +1,8 @@
+node_modules
+npm-debug.log
+Dockerfile
+
+.gitignore
+.dockerignore
+.prettierrc
+nest-cli.json

@@ -1,0 +1,12 @@
+version: '3.8'
+services:
+  app:
+    container_name: blusalt_assessment
+    image: simple_stackoverflow_api
+    restart: always
+    ports: 
+      - "8080:8080"
+    build:
+      context: .
+      dockerfile: Dockerfile
+    command: npm run start:dev
