@@ -7,6 +7,7 @@ import { AuthController, QuestionController } from './controllers';
 import { Answer, Question, User, Votes } from './entities';
 import { IsValueExistConstraint } from './shared';
 import { ConfigService } from '@nestjs/config';
+import { queryHandlers } from './queries';
 
 @Module({
   imports: [
@@ -18,6 +19,6 @@ import { ConfigService } from '@nestjs/config';
     }),
   ],
   controllers: [AuthController, QuestionController],
-  providers: [IsValueExistConstraint, ...commandHandlers],
+  providers: [IsValueExistConstraint, ...commandHandlers, ...queryHandlers],
 })
 export class StackApiModule {}

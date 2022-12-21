@@ -3,12 +3,14 @@ import {
   Logger,
   HttpCode,
   HttpStatus,
-  Post,
+  Get,
   UseGuards,
+  Query,
 } from '@nestjs/common';
 import { QueryBus } from '@nestjs/cqrs';
+import { ViewQuestionsQueryDto } from '../../dto';
 import { AuthGuard } from '../../Guards';
-import { ViewQuestions } from '../../queries';
+import { ViewQuestionsQuery } from '../../queries';
 
 @UseGuards(AuthGuard)
 @Controller('question')
@@ -19,12 +21,12 @@ export class QuestionController {
   }
 
   @HttpCode(HttpStatus.OK)
-  @Post('/view-questions')
-  async viewQuestions() {
+  @Get('/view-questions')
+  async viewQuestions(@Query() param: ViewQuestionsQueryDto) {
     this.logger.log('In view questions controller');
     this.logger.log(
-      `Calling queryBus.execute with an instance of ${ViewQuestions.name}`,
+      `Calling queryBus.execute with an instance of ${ViewQuestionsQuery.name}`,
     );
-    return await this.queryBus.execute(new ViewQuestions());
+    return await this.queryBus.execute(new ViewQuestionsQuery(param));
   }
 }
