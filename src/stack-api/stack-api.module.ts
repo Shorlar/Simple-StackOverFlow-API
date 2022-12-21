@@ -3,7 +3,7 @@ import { CqrsModule } from '@nestjs/cqrs';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { JwtModule } from '@nestjs/jwt';
 import { commandHandlers } from './commands';
-import { AuthController } from './controllers';
+import { AuthController, QuestionController } from './controllers';
 import { Answer, Question, User, Votes } from './entities';
 import { IsValueExistConstraint } from './shared';
 import { ConfigService } from '@nestjs/config';
@@ -14,10 +14,10 @@ import { ConfigService } from '@nestjs/config';
     CqrsModule,
     JwtModule.register({
       secret: `${new ConfigService().get<string>('SECRET_KEY')}`,
-      signOptions: { expiresIn: "7 days" },
+      signOptions: { expiresIn: '7 days' },
     }),
   ],
-  controllers: [AuthController],
+  controllers: [AuthController, QuestionController],
   providers: [IsValueExistConstraint, ...commandHandlers],
 })
 export class StackApiModule {}
