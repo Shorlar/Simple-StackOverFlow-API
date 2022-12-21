@@ -4,7 +4,7 @@ import {
   HttpCode,
   HttpStatus,
   Body,
-  Logger,
+  Logger
 } from '@nestjs/common';
 import { CommandBus } from '@nestjs/cqrs';
 import { SignInCommand, SignUpCommand } from '../../commands';
