@@ -7,8 +7,8 @@ import {
   Logger,
 } from '@nestjs/common';
 import { CommandBus } from '@nestjs/cqrs';
-import { SignUpCommand } from '../../commands';
-import { SignUpDto } from '../../dto';
+import { SignInCommand, SignUpCommand } from '../../commands';
+import { SignInDto, SignUpDto } from '../../dto';
 
 @Controller('auth')
 export class AuthController {
@@ -25,5 +25,15 @@ export class AuthController {
       `Calling commandBus.execute with an instance of ${SignUpCommand.name}`,
     );
     return await this.commandBus.execute(new SignUpCommand(body));
+  }
+
+  @HttpCode(HttpStatus.OK)
+  @Post('/sign-in')
+  async signIn(@Body() body: SignInDto){
+    this.logger.log('In sign in controller')
+    this.logger.log(
+      `Calling commandBus.execute with an instance of ${SignInCommand.name}`,
+    );
+    return await this.commandBus.execute(new SignInCommand(body))
   }
 }
