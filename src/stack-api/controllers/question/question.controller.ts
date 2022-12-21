@@ -6,11 +6,16 @@ import {
   Get,
   UseGuards,
   Query,
+  Body,
+  Post,
 } from '@nestjs/common';
 import { QueryBus } from '@nestjs/cqrs';
-import { ViewQuestionsQueryDto } from '../../dto';
+import { AskQuestionCommand } from '../../commands';
+import { AskQuestionDto, ViewQuestionsQueryDto } from '../../dto';
+import { User } from '../../entities';
 import { AuthGuard } from '../../Guards';
 import { ViewQuestionsQuery } from '../../queries';
+import { SignInUser } from '../../shared';
 
 @UseGuards(AuthGuard)
 @Controller('question')
@@ -28,5 +33,15 @@ export class QuestionController {
       `Calling queryBus.execute with an instance of ${ViewQuestionsQuery.name}`,
     );
     return await this.queryBus.execute(new ViewQuestionsQuery(param));
+  }
+
+  @HttpCode(HttpStatus.OK)
+  @Post('/ask-question')
+  async askQuestion(@Body() body: AskQuestionDto, @SignInUser() user: User) {
+    this.logger.log('In ask question controller');
+    this.logger.log(
+      `Calling commandBus.execute with an instance of ${AskQuestionCommand.name}`,
+    );
+    return await this.queryBus.execute(new AskQuestionCommand(body, user));
   }
 }
