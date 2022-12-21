@@ -14,14 +14,14 @@ export class User {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @Column()
+  @Column({ unique: true })
   displayName: string;
 
   @Column({ unique: true })
   email: string;
 
   @Column()
-  hashsedPassword: string;
+  hashedPassword: string;
 
   @Column({ length: 256, nullable: true })
   aboutMe: string;

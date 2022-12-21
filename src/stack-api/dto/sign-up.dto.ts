@@ -5,7 +5,10 @@ import {
   IsAlphanumeric,
   Length,
   IsOptional,
+  IsDefined,
 } from 'class-validator';
+import { User } from '../entities';
+import { IsValueExists } from '../shared';
 
 export class SignUpDto {
   /**
@@ -14,6 +17,8 @@ export class SignUpDto {
    */
   @IsString()
   @IsNotEmpty()
+  @IsDefined()
+  @IsValueExists()
   displayName: string;
 
   /**
@@ -23,6 +28,7 @@ export class SignUpDto {
   @IsString()
   @IsNotEmpty()
   @IsEmail()
+  @IsValueExists()
   email: string;
 
   /**

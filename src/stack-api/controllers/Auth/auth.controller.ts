@@ -10,15 +10,16 @@ import { CommandBus } from '@nestjs/cqrs';
 import { SignUpCommand } from '../../commands';
 import { SignUpDto } from '../../dto';
 
-@Controller('sign-up')
-export class SignUpController {
+@Controller('auth')
+export class AuthController {
   private readonly logger: Logger;
   constructor(private readonly commandBus: CommandBus) {
-    this.logger = new Logger(SignUpController.name);
+    this.logger = new Logger(AuthController.name);
   }
-  @Post('/')
+  
   @HttpCode(HttpStatus.OK)
-  async createDepartment(@Body() body: SignUpDto) {
+  @Post('/sign-up')
+  async signUp(@Body() body: SignUpDto) {
     this.logger.log('In sign up controller');
     this.logger.log(
       `Calling commandBus.execute with an instance of ${SignUpCommand.name}`,
