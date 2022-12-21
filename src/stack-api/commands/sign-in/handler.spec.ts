@@ -55,6 +55,10 @@ describe(`${SignInCommandHandler.name}`, () => {
     handler = module.get<SignInCommandHandler>(SignInCommandHandler);
   });
 
+  afterEach(async () => {
+    jest.clearAllMocks();
+  });
+
   it('should be defined', () => {
     expect(handler).toBeDefined();
     expect(handler).toBeInstanceOf(SignInCommandHandler);
