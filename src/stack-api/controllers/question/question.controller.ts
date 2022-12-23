@@ -10,11 +10,15 @@ import {
   Post,
   UseInterceptors,
   ClassSerializerInterceptor,
-  SerializeOptions
+  SerializeOptions,
 } from '@nestjs/common';
 import { QueryBus, CommandBus } from '@nestjs/cqrs';
-import { AskQuestionCommand } from '../../commands';
-import { AskQuestionDto, ViewQuestionsQueryDto } from '../../dto';
+import { AnswerQuestionComand, AskQuestionCommand } from '../../commands';
+import {
+  AnswerQuestionDto,
+  AskQuestionDto,
+  ViewQuestionsQueryDto,
+} from '../../dto';
 import { User } from '../../entities';
 import { AuthGuard } from '../../Guards';
 import { ViewQuestionsQuery } from '../../queries';
@@ -51,5 +55,18 @@ export class QuestionController {
       `Calling commandBus.execute with an instance of ${AskQuestionCommand.name}`,
     );
     return await this.commandBus.execute(new AskQuestionCommand(body, user));
+  }
+
+  @HttpCode(HttpStatus.OK)
+  @Post('/answer-question')
+  async answerQuestion(
+    @Body() body: AnswerQuestionDto,
+    @SignedInUser() user: User,
+  ) {
+    this.logger.log('In answer question controller');
+    this.logger.log(
+      `Calling commandBus.execute with an instance of ${AnswerQuestionComand.name}`,
+    );
+    return await this.commandBus.execute(new AnswerQuestionComand(body, user));
   }
 }
