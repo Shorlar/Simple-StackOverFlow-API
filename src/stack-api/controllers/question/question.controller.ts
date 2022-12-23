@@ -8,20 +8,28 @@ import {
   Query,
   Body,
   Post,
+  UseInterceptors,
+  ClassSerializerInterceptor,
+  SerializeOptions
 } from '@nestjs/common';
-import { QueryBus } from '@nestjs/cqrs';
+import { QueryBus, CommandBus } from '@nestjs/cqrs';
 import { AskQuestionCommand } from '../../commands';
 import { AskQuestionDto, ViewQuestionsQueryDto } from '../../dto';
 import { User } from '../../entities';
 import { AuthGuard } from '../../Guards';
 import { ViewQuestionsQuery } from '../../queries';
-import { SignInUser } from '../../shared';
+import { SignedInUser } from '../../shared';
 
 @UseGuards(AuthGuard)
+@UseInterceptors(ClassSerializerInterceptor)
+@SerializeOptions({ excludePrefixes: ['hashed'] })
 @Controller('question')
 export class QuestionController {
   private readonly logger: Logger;
-  constructor(private readonly queryBus: QueryBus) {
+  constructor(
+    private readonly queryBus: QueryBus,
+    private readonly commandBus: CommandBus,
+  ) {
     this.logger = new Logger(QuestionController.name);
   }
 
@@ -37,11 +45,11 @@ export class QuestionController {
 
   @HttpCode(HttpStatus.OK)
   @Post('/ask-question')
-  async askQuestion(@Body() body: AskQuestionDto, @SignInUser() user: User) {
+  async askQuestion(@Body() body: AskQuestionDto, @SignedInUser() user: User) {
     this.logger.log('In ask question controller');
     this.logger.log(
       `Calling commandBus.execute with an instance of ${AskQuestionCommand.name}`,
     );
-    return await this.queryBus.execute(new AskQuestionCommand(body, user));
+    return await this.commandBus.execute(new AskQuestionCommand(body, user));
   }
 }
