@@ -7,6 +7,7 @@ export * from './sign-up/sign-up.command';
 export * from './sign-in/command';
 export * from './ask-question/command';
 export * from './answer-question/comand';
+export * from './vote/command';
 export const commandHandlers = [
   SignUpCommandHandler,
   SignInCommandHandler,
