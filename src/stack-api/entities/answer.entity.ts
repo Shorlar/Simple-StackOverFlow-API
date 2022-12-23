@@ -21,9 +21,7 @@ export class Answer {
   })
   user: User;
 
-  @ManyToOne(() => Question, (question) => question.id, {
-    eager: true,
-  })
+  @ManyToOne(() => Question, (question) => question.id)
   question: Question;
 
   @Column()

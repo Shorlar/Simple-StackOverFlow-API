@@ -35,7 +35,7 @@ export class Question {
   @CreateDateColumn({ type: 'timestamp' })
   creationDate: Date;
 
-  @OneToMany(() => Answer, (answer) => answer.question)
+  @OneToMany(() => Answer, (answer) => answer.question, { eager: true })
   answer: Answer;
 
   @OneToMany(() => Votes, (votes) => votes.question)

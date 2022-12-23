@@ -1,3 +1,4 @@
+import { AnswerQuestionComandHandler } from './answer-question/handler';
 import { AskQuestionCommandHandler } from './ask-question/handler';
 import { SignInCommandHandler } from './sign-in/handler';
 import { SignUpCommandHandler } from './sign-up/sign-up.handler';
@@ -10,4 +11,5 @@ export const commandHandlers = [
   SignUpCommandHandler,
   SignInCommandHandler,
   AskQuestionCommandHandler,
+  AnswerQuestionComandHandler,
 ];
