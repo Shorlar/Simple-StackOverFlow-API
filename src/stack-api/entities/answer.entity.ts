@@ -27,9 +27,6 @@ export class Answer {
   @Column()
   answerBody: string;
 
-  @Column({ default: 0 })
-  score: number;
-
   @CreateDateColumn({ type: 'timestamp' })
   creationDate: Date;
 }

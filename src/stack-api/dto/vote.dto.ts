@@ -1,4 +1,4 @@
-import { IsEnum, IsNotEmpty, IsString } from 'class-validator';
+import { IsEnum, IsNotEmpty, IsNumber, IsString } from 'class-validator';
 import { VoteType } from '../shared';
 
 export class VoteDto {
@@ -10,4 +10,12 @@ export class VoteDto {
   @IsNotEmpty()
   @IsEnum(VoteType)
   voteType: string;
+
+  /**
+   * ID of question to vote
+   * @example 1
+   */
+  @IsNumber()
+  @IsNotEmpty()
+  questionId: number
 }

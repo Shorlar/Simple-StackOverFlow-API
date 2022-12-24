@@ -39,7 +39,10 @@ export class AnswerQuestionComandHandler
       );
     }
     if (!question) {
-      throw new HttpException('Invalid Question ID', HttpStatus.BAD_REQUEST);
+      throw new HttpException(
+        ErrorMessages.INVALID_QUESTION,
+        HttpStatus.BAD_REQUEST,
+      );
     }
     const answerObject = {
       userDisplayName: user.displayName,

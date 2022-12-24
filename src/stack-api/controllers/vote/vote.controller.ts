@@ -5,13 +5,16 @@ import {
   HttpCode,
   HttpStatus,
   Body,
+  UseGuards
 } from '@nestjs/common';
 import { CommandBus } from '@nestjs/cqrs';
 import { VoteCommand } from '../../commands';
 import { VoteDto } from '../../dto';
 import { User } from '../../entities';
+import { AuthGuard } from '../../Guards';
 import { SignedInUser } from '../../shared';
 
+@UseGuards(AuthGuard)
 @Controller('vote')
 export class VoteController {
   public readonly logger: Logger;

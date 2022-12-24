@@ -13,14 +13,10 @@ export class Votes {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @ManyToOne(() => User, (user) => user.id, {
-    eager: true,
-  })
+  @ManyToOne(() => User, (user) => user.id)
   user: User;
 
-  @ManyToOne(() => Question, (question) => question.id, {
-    eager: true,
-  })
+  @ManyToOne(() => Question, (question) => question.id)
   question: Question;
 
   @Column()
