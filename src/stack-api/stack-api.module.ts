@@ -3,7 +3,11 @@ import { CqrsModule } from '@nestjs/cqrs';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { JwtModule } from '@nestjs/jwt';
 import { commandHandlers } from './commands';
-import { AuthController, QuestionController } from './controllers';
+import {
+  AuthController,
+  QuestionController,
+  VoteController,
+} from './controllers';
 import { Answer, Question, User, Votes } from './entities';
 import { IsValueExistConstraint } from './shared';
 import { ConfigService } from '@nestjs/config';
@@ -18,7 +22,7 @@ import { queryHandlers } from './queries';
       signOptions: { expiresIn: '7 days' },
     }),
   ],
-  controllers: [AuthController, QuestionController],
+  controllers: [AuthController, QuestionController, VoteController],
   providers: [IsValueExistConstraint, ...commandHandlers, ...queryHandlers],
 })
 export class StackApiModule {}
