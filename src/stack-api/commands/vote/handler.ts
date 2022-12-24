@@ -62,13 +62,31 @@ export class VoteCommandHandler implements ICommandHandler<VoteCommand> {
           HttpStatus.BAD_REQUEST,
         );
       } else if (isVoteExists.voteType === 'UP') {
-        await this.votesRepository.update(isVoteExists.id, {
-          voteType: 'DOWN',
-        });
+        try {
+          await this.votesRepository.update(isVoteExists.id, {
+            voteType: 'DOWN',
+          });
+        } catch (error) {
+          this.logger.log(`Error: ${error}`);
+          throw new HttpException(
+            ErrorMessages.DATABASE_ERROR,
+            HttpStatus.INTERNAL_SERVER_ERROR,
+          );
+        }
         await this.updateScore(questionId, -1);
         return 'downvote successful';
       } else {
-        await this.votesRepository.update(isVoteExists.id, { voteType: 'UP' });
+        try {
+          await this.votesRepository.update(isVoteExists.id, {
+            voteType: 'UP',
+          });
+        } catch (error) {
+          this.logger.log(`Error: ${error}`);
+          throw new HttpException(
+            ErrorMessages.DATABASE_ERROR,
+            HttpStatus.INTERNAL_SERVER_ERROR,
+          );
+        }
         await this.updateScore(questionId, +1);
         return 'upvote successful';
       }
@@ -78,7 +96,15 @@ export class VoteCommandHandler implements ICommandHandler<VoteCommand> {
         question,
         voteType,
       };
-      await this.votesRepository.save(voteObject);
+      try {
+        await this.votesRepository.save(voteObject);
+      } catch (error) {
+        this.logger.log(`Error: ${error}`);
+        throw new HttpException(
+          ErrorMessages.DATABASE_ERROR,
+          HttpStatus.INTERNAL_SERVER_ERROR,
+        );
+      }
       if (voteType === 'UP') {
         await this.updateScore(questionId, +1);
       } else {
