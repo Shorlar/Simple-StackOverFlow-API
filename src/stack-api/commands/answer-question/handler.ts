@@ -1,10 +1,11 @@
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
 import { AnswerQuestionComand } from './comand';
-import { Logger, HttpException, HttpStatus } from '@nestjs/common';
+import { Logger, HttpException, HttpStatus, Inject } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Answer, Question } from '../../entities';
 import { Repository } from 'typeorm';
 import { ErrorMessages } from '../../shared';
+import { ClientProxy } from '@nestjs/microservices/client';
 
 @CommandHandler(AnswerQuestionComand)
 export class AnswerQuestionComandHandler
@@ -16,6 +17,7 @@ export class AnswerQuestionComandHandler
     private answerRepository: Repository<Answer>,
     @InjectRepository(Question)
     private questionRepository: Repository<Question>,
+    @Inject('NOTIFICATION') private readonly answerNotification: ClientProxy,
   ) {
     this.logger = new Logger(AnswerQuestionComand.name);
   }
@@ -52,6 +54,7 @@ export class AnswerQuestionComandHandler
     };
     try {
       await this.answerRepository.save(answerObject);
+      this.answerNotification.emit<string>('answer', question.user.email);
       this.logger.log('Done saving answer');
       return 'Successful';
     } catch (error) {

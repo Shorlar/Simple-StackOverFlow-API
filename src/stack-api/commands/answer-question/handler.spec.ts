@@ -9,6 +9,10 @@ import { AnswerQuestionComandHandler } from './handler';
 describe(`${AnswerQuestionComandHandler.name}`, () => {
   let handler: AnswerQuestionComandHandler;
 
+  const answerNotification = {
+    emit: jest.fn(),
+  };
+
   const questionRepository = {
     findOne: jest.fn(),
   };
@@ -60,6 +64,10 @@ describe(`${AnswerQuestionComandHandler.name}`, () => {
           provide: getRepositoryToken(Question),
           useValue: questionRepository,
         },
+        {
+          provide: 'NOTIFICATION',
+          useValue: answerNotification,
+        },
       ],
     }).compile();
     handler = module.get<AnswerQuestionComandHandler>(
@@ -84,6 +92,7 @@ describe(`${AnswerQuestionComandHandler.name}`, () => {
     expect(questionRepository.findOne).resolves;
     expect(answerRepository.save).toBeCalled();
     expect(answerRepository).resolves;
+    expect(answerNotification.emit).toBeCalled();
     expect(response).toEqual('Successful');
   });
 
