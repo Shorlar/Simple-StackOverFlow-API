@@ -12,6 +12,7 @@ import { Answer, Question, User, Votes } from './entities';
 import { IsValueExistConstraint } from './shared';
 import { ConfigService } from '@nestjs/config';
 import { queryHandlers } from './queries';
+import { ClientsModule, Transport } from '@nestjs/microservices';
 
 @Module({
   imports: [
@@ -21,6 +22,19 @@ import { queryHandlers } from './queries';
       secret: `${new ConfigService().get<string>('SECRET_KEY')}`,
       signOptions: { expiresIn: '7 days' },
     }),
+    ClientsModule.register([
+      {
+        name: 'NOTIFICATION',
+        transport: Transport.RMQ,
+        options: {
+          urls: [`${new ConfigService().get<string>('URL')}`],
+          queue: 'NOTIFICATION',
+          queueOptions: {
+            durable: true,
+          },
+        },
+      },
+    ]),
   ],
   controllers: [AuthController, QuestionController, VoteController],
   providers: [IsValueExistConstraint, ...commandHandlers, ...queryHandlers],
