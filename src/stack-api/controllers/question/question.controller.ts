@@ -23,10 +23,12 @@ import { User } from '../../entities';
 import { AuthGuard } from '../../Guards';
 import { ViewQuestionsQuery } from '../../queries';
 import { SignedInUser } from '../../shared';
+import { ApiBearerAuth, ApiBody, ApiTags } from '@nestjs/swagger';
 
 @UseGuards(AuthGuard)
 @UseInterceptors(ClassSerializerInterceptor)
 @SerializeOptions({ excludePrefixes: ['hashed'] })
+@ApiTags('question')
 @Controller('question')
 export class QuestionController {
   private readonly logger: Logger;
@@ -48,6 +50,7 @@ export class QuestionController {
   }
 
   @HttpCode(HttpStatus.OK)
+  @ApiBearerAuth()
   @Post('/ask-question')
   async askQuestion(@Body() body: AskQuestionDto, @SignedInUser() user: User) {
     this.logger.log('In ask question controller');
@@ -58,6 +61,7 @@ export class QuestionController {
   }
 
   @HttpCode(HttpStatus.OK)
+  @ApiBearerAuth()
   @Post('/answer-question')
   async answerQuestion(
     @Body() body: AnswerQuestionDto,
