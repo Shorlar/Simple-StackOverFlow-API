@@ -29,6 +29,9 @@ export class Question {
   @Column()
   questionBody: string;
 
+  @Column({ default: true })
+  subscribeAnswer: boolean;
+
   @Column({ default: 0 })
   score: number;
 

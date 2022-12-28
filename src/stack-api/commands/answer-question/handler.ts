@@ -54,7 +54,10 @@ export class AnswerQuestionComandHandler
     };
     try {
       await this.answerRepository.save(answerObject);
-      this.answerNotification.emit<string>('answer', question.user.email);
+      if (question.subscribeAnswer) {
+        this.logger.log('publishing answer event')
+        this.answerNotification.emit<string>('answer', question.user.email);
+      }
       this.logger.log('Done saving answer');
       return 'Successful';
     } catch (error) {

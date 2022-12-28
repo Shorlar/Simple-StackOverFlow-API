@@ -28,6 +28,7 @@ describe(`${AnswerQuestionComandHandler.name}`, () => {
     questionBody: 'Here is a summary',
     score: 0,
     creationDate: '2022-12-23T10:18:26.778Z',
+    subscribeAnswer: true,
     user: {
       id: 12,
       displayName: 'shola',
@@ -49,7 +50,6 @@ describe(`${AnswerQuestionComandHandler.name}`, () => {
     aboutMe: null,
     creationDate: '2022-12-20T20:57:37.494Z',
   } as unknown as User;
-
   const command = new AnswerQuestionComand(body, user);
 
   beforeEach(async () => {
