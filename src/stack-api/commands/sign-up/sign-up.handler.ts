@@ -7,6 +7,7 @@ import { User } from '../../entities';
 import * as bcrypt from 'bcryptjs';
 import { ErrorMessages } from '../../shared';
 import { JwtService } from '@nestjs/jwt';
+import { DatabaseException } from '../../../util/database-exception';
 
 @CommandHandler(SignUpCommand)
 export class SignUpCommandHandler implements ICommandHandler<SignUpCommand> {
@@ -45,11 +46,7 @@ export class SignUpCommandHandler implements ICommandHandler<SignUpCommand> {
       const token = this.jwtService.sign({ email: newUser.email });
       return { ...newUser, token };
     } catch (error) {
-      this.logger.log(`Error: ${error}`);
-      throw new HttpException(
-        ErrorMessages.DATABASE_ERROR,
-        HttpStatus.INTERNAL_SERVER_ERROR,
-      );
+      throw new DatabaseException(error);
     }
   }
 }

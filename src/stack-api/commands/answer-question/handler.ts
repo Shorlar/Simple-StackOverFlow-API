@@ -6,6 +6,7 @@ import { Answer, Question } from '../../entities';
 import { Repository } from 'typeorm';
 import { ErrorMessages } from '../../shared';
 import { ClientProxy } from '@nestjs/microservices/client';
+import { DatabaseException } from '../../../util/database-exception';
 
 @CommandHandler(AnswerQuestionComand)
 export class AnswerQuestionComandHandler
@@ -34,11 +35,7 @@ export class AnswerQuestionComandHandler
         where: { id: questionId },
       });
     } catch (error) {
-      this.logger.log(`Error: ${error}`);
-      throw new HttpException(
-        ErrorMessages.DATABASE_ERROR,
-        HttpStatus.INTERNAL_SERVER_ERROR,
-      );
+      throw new DatabaseException(error);
     }
     if (!question) {
       throw new HttpException(
@@ -55,17 +52,13 @@ export class AnswerQuestionComandHandler
     try {
       await this.answerRepository.save(answerObject);
       if (question.subscribeAnswer) {
-        this.logger.log('publishing answer event')
+        this.logger.log('publishing answer event');
         this.answerNotification.emit<string>('answer', question.user.email);
       }
       this.logger.log('Done saving answer');
       return 'Successful';
     } catch (error) {
-      this.logger.log(`Error: ${error}`);
-      throw new HttpException(
-        ErrorMessages.DATABASE_ERROR,
-        HttpStatus.INTERNAL_SERVER_ERROR,
-      );
+      throw new DatabaseException(error);
     }
   }
 }

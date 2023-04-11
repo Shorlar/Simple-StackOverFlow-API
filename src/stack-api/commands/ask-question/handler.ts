@@ -1,10 +1,10 @@
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
 import { AskQuestionCommand } from './command';
-import { Logger, HttpException, HttpStatus } from '@nestjs/common';
+import { Logger } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Question } from '../../entities';
 import { Repository } from 'typeorm';
-import { ErrorMessages } from '../../shared';
+import { DatabaseException } from '../../../util/database-exception';
 
 @CommandHandler(AskQuestionCommand)
 export class AskQuestionCommandHandler
@@ -35,11 +35,7 @@ export class AskQuestionCommandHandler
       this.logger.log('Done saving question');
       return question;
     } catch (error) {
-      this.logger.log(`Error: ${error}`);
-      throw new HttpException(
-        ErrorMessages.DATABASE_ERROR,
-        HttpStatus.INTERNAL_SERVER_ERROR,
-      );
+      throw new DatabaseException(error);
     }
   }
 }
