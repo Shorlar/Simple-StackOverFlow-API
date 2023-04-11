@@ -7,6 +7,7 @@ import { SignInCommand } from './command';
 import { ErrorMessages } from '../../shared';
 import * as bcrypt from 'bcryptjs';
 import { JwtService } from '@nestjs/jwt';
+import { DatabaseException } from '../../../util/database-exception';
 
 @CommandHandler(SignInCommand)
 export class SignInCommandHandler implements ICommandHandler<SignInCommand> {
@@ -27,10 +28,7 @@ export class SignInCommandHandler implements ICommandHandler<SignInCommand> {
     try {
       isUserExists = await this.repository.findOne({ where: { email } });
     } catch (error) {
-      throw new HttpException(
-        ErrorMessages.DATABASE_ERROR,
-        HttpStatus.INTERNAL_SERVER_ERROR,
-      );
+      throw new DatabaseException(error);
     }
     if (!isUserExists) {
       throw new HttpException(

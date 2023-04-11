@@ -5,6 +5,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Question, Votes } from '../../entities';
 import { Repository } from 'typeorm';
 import { ErrorMessages } from '../../shared';
+import { DatabaseException } from '../../../util/database-exception';
 
 @CommandHandler(VoteCommand)
 export class VoteCommandHandler implements ICommandHandler<VoteCommand> {
@@ -30,11 +31,7 @@ export class VoteCommandHandler implements ICommandHandler<VoteCommand> {
         where: { id: questionId },
       });
     } catch (error) {
-      this.logger.log(`Error: ${error}`);
-      throw new HttpException(
-        ErrorMessages.DATABASE_ERROR,
-        HttpStatus.INTERNAL_SERVER_ERROR,
-      );
+      throw new DatabaseException(error);
     }
     if (!question) {
       throw new HttpException(
@@ -49,11 +46,7 @@ export class VoteCommandHandler implements ICommandHandler<VoteCommand> {
         where: { question: { id: questionId }, user: { id: user.id } },
       });
     } catch (error) {
-      this.logger.log(`Error: ${error}`);
-      throw new HttpException(
-        ErrorMessages.DATABASE_ERROR,
-        HttpStatus.INTERNAL_SERVER_ERROR,
-      );
+      throw new DatabaseException(error);
     }
     if (isVoteExists) {
       if (isVoteExists.voteType === voteType) {
@@ -67,11 +60,7 @@ export class VoteCommandHandler implements ICommandHandler<VoteCommand> {
             voteType: 'DOWN',
           });
         } catch (error) {
-          this.logger.log(`Error: ${error}`);
-          throw new HttpException(
-            ErrorMessages.DATABASE_ERROR,
-            HttpStatus.INTERNAL_SERVER_ERROR,
-          );
+          throw new DatabaseException(error);
         }
         await this.updateScore(questionId, -1);
         return 'downvote successful';
@@ -81,11 +70,7 @@ export class VoteCommandHandler implements ICommandHandler<VoteCommand> {
             voteType: 'UP',
           });
         } catch (error) {
-          this.logger.log(`Error: ${error}`);
-          throw new HttpException(
-            ErrorMessages.DATABASE_ERROR,
-            HttpStatus.INTERNAL_SERVER_ERROR,
-          );
+          throw new DatabaseException(error);
         }
         await this.updateScore(questionId, +1);
         return 'upvote successful';
@@ -99,11 +84,7 @@ export class VoteCommandHandler implements ICommandHandler<VoteCommand> {
       try {
         await this.votesRepository.save(voteObject);
       } catch (error) {
-        this.logger.log(`Error: ${error}`);
-        throw new HttpException(
-          ErrorMessages.DATABASE_ERROR,
-          HttpStatus.INTERNAL_SERVER_ERROR,
-        );
+        throw new DatabaseException(error);
       }
       if (voteType === 'UP') {
         await this.updateScore(questionId, +1);
@@ -124,11 +105,7 @@ export class VoteCommandHandler implements ICommandHandler<VoteCommand> {
       await this.questionRepository.update(id, { score: score });
       this.logger.log('Done updating score');
     } catch (error) {
-      this.logger.log(`Error: ${error}`);
-      throw new HttpException(
-        ErrorMessages.DATABASE_ERROR,
-        HttpStatus.INTERNAL_SERVER_ERROR,
-      );
+      throw new DatabaseException(error);
     }
   }
 }

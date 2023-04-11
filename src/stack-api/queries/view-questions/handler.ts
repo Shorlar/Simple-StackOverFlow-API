@@ -1,10 +1,10 @@
 import { IQueryHandler, QueryHandler } from '@nestjs/cqrs';
-import { Logger, HttpException, HttpStatus } from '@nestjs/common';
+import { Logger } from '@nestjs/common';
 import { ViewQuestionsQuery } from './query';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Question } from '../../entities';
 import { Repository } from 'typeorm';
-import { ErrorMessages } from '../../shared';
+import { DatabaseException } from '../../../util/database-exception';
 
 @QueryHandler(ViewQuestionsQuery)
 export class ViewQuestionsQueryHandler
@@ -31,11 +31,7 @@ export class ViewQuestionsQueryHandler
       this.logger.log('Done fetching Questions');
       return questions;
     } catch (error) {
-      this.logger.log(`Error: ${error}`);
-      throw new HttpException(
-        ErrorMessages.DATABASE_ERROR,
-        HttpStatus.INTERNAL_SERVER_ERROR,
-      );
+      throw new DatabaseException(error);
     }
   }
 }
